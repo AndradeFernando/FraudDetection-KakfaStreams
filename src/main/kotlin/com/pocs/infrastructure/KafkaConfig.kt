@@ -38,8 +38,13 @@ class KafkaConfig {
     }
 
     @Bean
-    fun createTopic(): NewTopic {
+    fun createFinancialTransactionTopic(): NewTopic {
         return NewTopic("financial-transactions", 1, 1.toShort())
+    }
+
+    @Bean
+    fun createFraudulentTransactionTopic(): NewTopic {
+        return NewTopic("fraudulent-transactions", 1, 1.toShort())
     }
 
     @Bean
@@ -57,7 +62,7 @@ class KafkaConfig {
 
 
 
-    @Bean
+/*    @Bean
     fun transactionStream(streamsBuilder: StreamsBuilder): KStream<String, FinancialTransaction> {
         val stream = streamsBuilder.stream<String, FinancialTransaction>("financial-transactions")
 
@@ -76,5 +81,5 @@ class KafkaConfig {
         fraudulentTransactions.to("fraudulent-transactions")
 
         return stream
-    }
+    }*/
 }

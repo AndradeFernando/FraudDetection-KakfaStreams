@@ -1,0 +1,3 @@
+package com.pocs.domain
+
+interface FraudulentTransactionStreamProcessing
