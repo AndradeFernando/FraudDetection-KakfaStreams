@@ -1,0 +1,13 @@
+spring:
+  kafka:
+    consumer:
+      properties:
+        spring.json.trusted.packages: com.pocs.domain.*
+    producer:
+      properties:
+        spring.json.add.type.headers: false
+    streams:
+      bootstrap-servers: localhost:9092
+      application-id: fraud-detection-application
+      properties:
+        processing.guarantee: exactly_once

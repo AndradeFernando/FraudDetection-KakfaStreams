@@ -1,0 +1,56 @@
+version: '3.1'
+
+networks:
+  calengine-network:
+    driver: bridge
+
+services:
+
+  mongo:
+    image: mongo:4
+    restart: always
+    container_name: 'cal-nosql-db'
+    networks:
+      - calengine-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: oms-itgs4
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongodb:/docker-entrypoint-initdb.d:ro
+  lensesio:
+    image: dougdonohoe/fast-data-dev:latest
+    container_name: lensesio
+    ports:
+      - "2181:2181"
+      - "3030:3030"
+      - "8081-8083:8081-8083"
+      - "9581-9585:9581-9585"
+      - "9092:9092"
+    environment:
+      - ADV_HOST=127.0.0.1
+      - RUN_TESTS=0
+      - SAMPLEDATA=0
+
+  akhq:
+    image: tchiotludo/akhq:0.21.0
+    container_name: akhq
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: "host.docker.internal:9092"
+              schema-registry:
+                url: "http://0.0.0.0:8081"
+        micronaut:
+          server:
+            port: 9001
+    depends_on:
+      - lensesio
+    ports:
+      - "9001:9001"
+    network_mode: host
